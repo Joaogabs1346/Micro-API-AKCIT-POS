@@ -1,0 +1,56 @@
+flowchart TB
+    %% ===== Cliente =====
+    subgraph Cliente["Cliente HTTP"]
+        C[Browser / curl / Swagger UI]
+    end
+
+    %% ===== Aplicação FastAPI =====
+    subgraph App["Aplicação FastAPI (Uvicorn)"]
+        direction TB
+
+        MAIN["main.py<br/>create_app()"]
+
+        subgraph APIv1["Camada API v1"]
+            ROUTER["api.v1.router<br/>api_router"]
+            ENDP_TASKS["endpoints.tasks<br/>CRUD /tasks"]
+            ENDP_HEALTH["endpoints.health<br/>GET /health"]
+            DEPS["api.deps<br/>get_db()"]
+        end
+
+        subgraph Domain["Camada de Domínio"]
+            SCHEMAS["schemas.task<br/>TaskCreate / TaskUpdate / TaskRead"]
+            CRUD["crud.task<br/>get / get_multi / create / update<br/>mark_completed / remove"]
+            MODELS["models.task<br/>Task + TaskStatus"]
+        end
+
+        subgraph DB["Camada DB"]
+            DBBASE["db.base<br/>Base (DeclarativeBase)"]
+            DBSESSION["db.session<br/>engine + SessionLocal"]
+            DBINIT["db.init_db<br/>init_db()"]
+        end
+
+        CONFIG["core.config<br/>Settings (.env)"]
+    end
+
+    %% ===== Infraestrutura =====
+    subgraph Infra["Docker Compose"]
+        PG[("PostgreSQL 16<br/>tabela tasks")]
+        VOL[("Bind mount<br/>./dados")]
+    end
+
+    %% ===== Fluxo =====
+    C -->|HTTP JSON| MAIN
+    MAIN --> ROUTER
+    ROUTER --> ENDP_TASKS
+    ROUTER --> ENDP_HEALTH
+    ENDP_TASKS -->|valida payload| SCHEMAS
+    ENDP_TASKS -->|Depends| DEPS
+    ENDP_TASKS --> CRUD
+    CRUD --> MODELS
+    MODELS --> DBBASE
+    DEPS --> DBSESSION
+    DBSESSION --> CONFIG
+    MAIN -.->|startup| DBINIT
+    DBINIT --> DBBASE
+    DBSESSION ==>|psycopg2| PG
+    PG --- VOL
