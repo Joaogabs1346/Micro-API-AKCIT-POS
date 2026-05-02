@@ -1,3 +1,13 @@
+"""
+Camada DB - Engine e Session Factory.
+
+Cria o engine SQLAlchemy a partir de `settings.DATABASE_URL` e exporta
+`SessionLocal`, a fábrica de sessões consumida pela dependency
+`get_db`. Aplica o ajuste `check_same_thread=False` apenas quando o
+banco é SQLite (necessário porque o FastAPI atende requisições em
+threads diferentes da que abriu a conexão).
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

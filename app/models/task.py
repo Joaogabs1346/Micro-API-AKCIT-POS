@@ -1,3 +1,12 @@
+"""
+Camada Models - Modelo ORM da Tarefa.
+
+Define o modelo SQLAlchemy `Task` (mapeado para a tabela `tasks`) e o
+enum `TaskStatus` que representa os estados de negócio possíveis.
+Esta é a única representação persistente da entidade — schemas Pydantic
+em `app.schemas.task` derivam dela para entrada e saída via HTTP.
+"""
+
 import enum
 from datetime import datetime, timezone
 
@@ -8,19 +17,35 @@ from app.db.base import Base
 
 
 def _utcnow() -> datetime:
+    """Retorna o timestamp atual em UTC com timezone-aware datetime."""
     return datetime.now(timezone.utc)
 
 
 class TaskStatus(str, enum.Enum):
-    """Possible states of a task in the To-Do list."""
+    """Estados possíveis de uma tarefa no fluxo de trabalho."""
 
-    PENDING = "pending"
-    IN_PROGRESS = "in_progress"
-    COMPLETED = "completed"
+    PENDING = "pending"          # Criada, ainda não iniciada
+    IN_PROGRESS = "in_progress"  # Em execução
+    COMPLETED = "completed"      # Concluída
 
 
 class Task(Base):
-    """SQLAlchemy model representing a single task."""
+    """Modelo ORM da entidade Tarefa.
+
+    Mapeia a tabela `tasks` no PostgreSQL. Persistido pelo SQLAlchemy 2.x
+    com colunas tipadas via `Mapped`/`mapped_column`. Os timestamps são
+    preenchidos no servidor de aplicação (não no banco) usando UTC.
+
+    Attributes:
+        id: Chave primária autoincrementada.
+        title: Título obrigatório (1–200 caracteres). Indexado para busca.
+        description: Descrição opcional em texto livre.
+        status: Estado atual (pending | in_progress | completed). Indexado
+            para suportar filtros por status no `GET /tasks`.
+        created_at: Timestamp UTC de criação, preenchido na inserção.
+        updated_at: Timestamp UTC da última alteração, atualizado em todo
+            UPDATE via `onupdate`.
+    """
 
     __tablename__ = "tasks"
 
