@@ -1,0 +1,32 @@
+# Segredos — NUNCA commitar
+.env
+.env.local
+*.key
+
+# Cache e temporários
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+docs/cov_html/
+
+# Ambientes virtuais
+venv/
+.venv/
+
+# Banco local
+*.db
+
+# Dados persistidos do Postgres (bind mount do docker-compose)
+dados/
+
+# IDEs
+.idea/
+.vscode/
+
+# SO
+.DS_Store
