@@ -2,20 +2,7 @@
 
 Micro-API RESTful desenvolvida em **FastAPI + SQLAlchemy 2.x + PostgreSQL**, empacotada com **Docker Compose** e coberta por testes automatizados (unitários, E2E e de schemas) com **pytest**. Projeto entregue como MVP acadêmico para o AKCIT (Pós-Graduação).
 
----
 
-## Problema e Solução
-
-### Problema
-Equipes pequenas e estudantes precisam de uma forma simples e padronizada de gerenciar tarefas (criar, listar, atualizar status, concluir e remover) sem depender de ferramentas SaaS pesadas. Soluções "from scratch" geralmente acabam sem testes automatizados, sem documentação executável e sem persistência confiável entre execuções.
-
-### Solução
-Esta Micro-API oferece um CRUD completo de tarefas exposto via HTTP/JSON, com:
-- Validação de payload por **Pydantic v2** (rejeita títulos vazios ou maiores que 200 caracteres, status inválidos etc.).
-- Persistência em **PostgreSQL 16** com volume bind-mount (`./dados/`) para reproduzir o estado em qualquer máquina.
-- Documentação interativa automática via **Swagger UI** em `/docs`.
-- 31 testes pytest cobrindo unidade, schemas e endpoints E2E.
-- Subida em um único comando: `docker compose up`.
 
 ---
 
