@@ -441,23 +441,6 @@ Micro-API-AKCIT-POS/
 
 ---
 
-## Limitações e próximos passos
-
-**Limitações atuais (escopo MVP):**
-- Sem autenticação ou autorização (a API é aberta).
-- Sem migrations versionadas — o schema é criado via `Base.metadata.create_all` no startup. Em produção real, migrar para Alembic.
-- Sem deploy online — execução restrita a `localhost` via Docker.
-- Sem rate limiting nem CORS configurado para múltiplos domínios.
-
-**Evoluções planejadas:**
-- Autenticação JWT por usuário e isolamento de tarefas por dono.
-- Migrations com Alembic.
-- Pipeline CI/CD (GitHub Actions) com lint + testes + build da imagem.
-- Deploy em provedor cloud (Render / Railway / Fly.io).
-- Frontend web simples consumindo a API.
-
----
-
 ## Uso da IA no Desenvolvimento
 
 O desenvolvimento deste projeto contou com o apoio do **Claude Code (Anthropic, modelo Opus 4.7)**, utilizado para:
